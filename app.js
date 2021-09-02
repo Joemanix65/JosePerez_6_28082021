@@ -1,15 +1,12 @@
 const express = require('express'); 
 const mongoose = require('mongoose');
 const path = require('path');
+require('dotenv').config();
 
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
 
-<<<<<<< Updated upstream
-mongoose.connect('mongodb+srv://@cluster0.mc40q.mongodb.net/test?retryWrites=true&w=majority',
-=======
-mongoose.connect('mongodb+srv://newUser26:42xgMdb65@cluster0.mc40q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
->>>>>>> Stashed changes
+mongoose.connect(process.env.ConnectDB_secret,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

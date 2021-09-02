@@ -41,7 +41,6 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id }) 
     .then(sauce => res.status(200).json(sauce))
@@ -55,5 +54,57 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.LikeDislikeSauce = (req, res, next) => {
-    
+    const userId = req.body.userId;
+    const like = req.body.like;
+    const sauceId = req.params.id;
+
+    switch (like) {
+        //on aime la sauce
+        case 1:
+            Sauce.updateOne({
+                _id: sauceId 
+                }, 
+                { 
+                $push: { usersLiked: userId }, 
+                $inc: { likes: +1 }
+                })
+              .then(() => res.status(200).json({ message: `J'aime !` }))
+              .catch((error) => res.status(400).json({ error }))
+        break;
+        //on aime pas la sauce
+        case -1:
+            Sauce.updateOne({ 
+                _id: sauceId 
+                },
+                { 
+                $push: { usersDisliked: userId }, 
+                $inc: { dislikes: +1 }
+                })
+                .then(() => res.status(200).json({ message: `Je n'aime pas !` }))
+                .catch((error) => res.status(400).json({ error }))
+        break;
+        //on annule le like ou le dislike
+        case 0:
+            Sauce.findOne({ 
+                _id: sauceId 
+                })
+           .then((sauce) => {
+            if (sauce.usersLiked.includes(userId)) { 
+              Sauce.updateOne({ _id: sauceId }, 
+                { $pull: { usersLiked: userId }, 
+                $inc: { likes: -1 }})
+                .then(() => res.status(200).json({ message: `Annulation Like` }))
+                .catch((error) => res.status(400).json({ error }))
+            }
+            if (sauce.usersDisliked.includes(userId)) { 
+              Sauce.updateOne({ _id: sauceId }, 
+                { $pull: { usersDisliked: userId }, 
+                $inc: { dislikes: -1 }})
+                .then(() => res.status(200).json({ message: `Annulation Dislike` }))
+                .catch((error) => res.status(400).json({ error }))
+            }
+          })
+          .catch((error) => res.status(404).json({ error }))
+        break;
+    }    
 }
