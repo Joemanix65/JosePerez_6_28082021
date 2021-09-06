@@ -1,6 +1,21 @@
 const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
+exports.getAllSauces = (req, res, next) => {
+    Sauce.find()//Query
+    .then(sauces => res.status(200).json(sauces))//Promise
+    .catch(error => res.status(400).json({ error }));
+   
+};
+
+exports.getOneSauce = (req, res, next) => {
+    Sauce.findOne({ _id: req.params.id }) 
+    
+    .then(sauce => res.status(200).json(sauce))
+    .catch(error => res.status(404).json({ error }));
+   
+};
+
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
@@ -9,8 +24,8 @@ exports.createSauce = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         likes: 0,
         dislikes: 0,
-        usersLiked: [' '],
-        usersDisliked: [' '], 
+        usersLiked: [],
+        usersDisliked: []
     });
     sauce.save()
       .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
@@ -25,7 +40,7 @@ exports.modifySauce =  (req, res, next) => {
     } : { ...req.body };
     Sauce.updateOne({ _id: req.params.id }, { ...sauceObjet, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
-    .catch(error => res.status(400).json({ error }));
+    .catch(error => res.status(403).json({ error }));
 };
 
 exports.deleteSauce = (req, res, next) => {
@@ -41,23 +56,12 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-exports.getOneSauce = (req, res, next) => {
-    Sauce.findOne({ _id: req.params.id }) 
-    .then(sauce => res.status(200).json(sauce))
-    .catch(error => res.status(404).json({ error }));
-};
-
-exports.getAllSauces = (req, res, next) => {
-    Sauce.find()//Query
-    .then(sauces => res.status(200).json(sauces))//Promise
-    .catch(error => res.status(400).json({ error }));
-};
-
-exports.LikeDislikeSauce = (req, res, next) => {
+exports.likeDislikeSauce = (req, res, ) => {
     const userId = req.body.userId;
     const like = req.body.like;
     const sauceId = req.params.id;
-
+    console.log(req.body)
+    
     switch (like) {
         //on aime la sauce
         case 1:
@@ -67,9 +71,11 @@ exports.LikeDislikeSauce = (req, res, next) => {
                 { 
                 $push: { usersLiked: userId }, 
                 $inc: { likes: +1 }
-                })
-              .then(() => res.status(200).json({ message: `J'aime !` }))
+                
+                }) 
+              .then(() => res.status(200).json({ message: "J'aime !" }))
               .catch((error) => res.status(400).json({ error }))
+              
         break;
         //on aime pas la sauce
         case -1:
@@ -104,7 +110,7 @@ exports.LikeDislikeSauce = (req, res, next) => {
                 .catch((error) => res.status(400).json({ error }))
             }
           })
-          .catch((error) => res.status(404).json({ error }))
+          .catch((error) => res.status(400).json({ error }))
         break;
     }    
 }
