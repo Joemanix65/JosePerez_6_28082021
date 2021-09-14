@@ -24,6 +24,6 @@ côté frontend exécuter `npm start` ce qui lancera le serveur local et ouvrira
 
 Côté BACKEND:
 
-Ouvrir un nouveau terminal côté backtend et exécuter `npm init` et valider toutes les options sauf pour le point d'entrée qui doit être `server.js`.
+Ouvrir un nouveau terminal côté backtend et exécuter `npm install` puis `npm init` et valider toutes les options sauf pour le point d'entrée qui doit être `server.js`.
 
 Exécuter `nodemon` ce qui lancera le serveur local et la connexion à la base de donnée MongoDB Atlas.
