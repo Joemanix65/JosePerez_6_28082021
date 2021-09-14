@@ -27,5 +27,3 @@ Côté BACKEND:
 Ouvrir un nouveau terminal côté backtend et exécuter `npm init` et valider toutes les options sauf pour le point d'entrée qui doit être `server.js`.
 
 Exécuter `nodemon` ce qui lancera le serveur local et la connexion à la base de donnée MongoDB Atlas.
-
-Pour l'accès à la base de donnée MongoDB Atlas n'oubliez pas de créer le fichier `.env` à l'intérieur du dossier `backend` et d'y copier les informations de connections fournies avec les livrables.
