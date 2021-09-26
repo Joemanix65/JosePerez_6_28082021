@@ -2,7 +2,6 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 exports.getAllSauces = (req, res, next) => {
-    console.log(req.body)
     Sauce.find()//Query
     .then(sauces => res.status(200).json(sauces))//Promise
     .catch(error => res.status(400).json({ error }));
